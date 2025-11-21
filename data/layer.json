@@ -1,0 +1,158 @@
+[
+    {
+        "name": "Gold Regions",
+        "geojson": {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[
+                    [46.75, 39.775],
+                    [46.7495, 39.7766],
+                    [46.7499, 39.776],
+                    [46.752, 39.7766]
+                ]]
+            }
+        },
+        "color": "#FFD700",
+        "opacity": 0.5,
+        "leafletLayer": null,
+        "metadata": {
+            "realName": "Gold Regions in Azerbaijan",
+            "source": "CFRY",
+            "yearRecorded": 1988,
+            "categories": "Outdated, Unreliable",
+            "notes": null
+        }
+    },
+    {
+        "name": "Eucalyptus Tree Regions",
+        "geojson": {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[
+                    [46.75, 39.776],
+                    [46.7499, 39.777],
+                    [46.748, 39.778],
+                    [46.7489, 39.779]
+                ]]
+            }
+        },
+        "color": "#00a72f",
+        "opacity": 0.5,
+        "leafletLayer": null,
+        "metadata": {
+            "realName": "Eucalyptus Tree Spread",
+            "source": "CFRY",
+            "yearRecorded": 2011,
+            "categories": "Old, Reliable",
+            "notes": null
+        }
+    },
+    {
+        "name": "Cedar Forests",
+        "geojson": {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[
+                    [46.749, 39.780],
+                    [46.7485, 39.7815],
+                    [46.747, 39.781],
+                    [46.7465, 39.7795]
+                ]]
+            }
+        },
+        "color": "#228B22",
+        "opacity": 0.5,
+        "leafletLayer": null,
+        "metadata": {
+            "realName": "Cedar Forests in Azerbaijan",
+            "source": "CFRY",
+            "yearRecorded": 1995,
+            "categories": "Reliable",
+            "notes": "Natural cedar forests, notable for biodiversity"
+        }
+    },
+    {
+        "name": "Olive Tree Groves",
+        "geojson": {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[
+                    [46.751, 39.778],
+                    [46.7497, 39.779],
+                    [46.7485, 39.7805],
+                    [46.7502, 39.7815]
+                ]]
+            }
+        },
+        "color": "#808000",
+        "opacity": 0.5,
+        "leafletLayer": null,
+        "metadata": {
+            "realName": "Olive Tree Groves",
+            "source": "CFRY",
+            "yearRecorded": 2005,
+            "categories": "Reliable, Established",
+            "notes": "Region famous for traditional olive cultivation"
+        }
+    },
+    {
+        "name": "Pine Forests",
+        "geojson": {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[
+                    [46.748, 39.775],
+                    [46.746, 39.7765],
+                    [46.745, 39.775],
+                    [46.7465, 39.7735]
+                ]]
+            }
+        },
+        "color": "#008080",
+        "opacity": 0.5,
+        "leafletLayer": null,
+        "metadata": {
+            "realName": "Pine Forests in Azerbaijan",
+            "source": "CFRY",
+            "yearRecorded": 2010,
+            "categories": "Reliable",
+            "notes": "Large pine forests in the eastern region"
+        }
+    },
+    {
+        "name": "Cypress Groves",
+        "geojson": {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[
+                    [46.752, 39.777],
+                    [46.7505, 39.7785],
+                    [46.749, 39.7775],
+                    [46.7503, 39.776]
+                ]]
+            }
+        },
+        "color": "#9ACD32",
+        "opacity": 0.5,
+        "leafletLayer": null,
+        "metadata": {
+            "realName": "Cypress Groves",
+            "source": "CFRY",
+            "yearRecorded": 2000,
+            "categories": "Established, Reliable",
+            "notes": "Widely spread cypress groves, known for their drought resistance"
+        }
+    }
+]
