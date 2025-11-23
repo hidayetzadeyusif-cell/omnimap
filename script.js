@@ -67,7 +67,7 @@ async function init() {
         });
 
         const box = document.createElement("div");
-        box.className = "layerContainer";
+        box.classList.add("layerContainer");
         l.domElement = box;
 
         const title = document.createElement("label");
@@ -94,30 +94,43 @@ async function init() {
         box.appendChild(slider);
 
         // ---- Color picker ----
+        const colorWrapper = document.createElement("div");
+        colorWrapper.className = "colorPickerWrapper";
+
+        const actualColor = document.createElement("div");
+        actualColor.className = "colorDisplay";
+        actualColor.style.backgroundColor = l.color;
+
         const colorPicker = document.createElement("input");
         colorPicker.type = "color";
+        colorPicker.className = "colorPicker";
         colorPicker.value = l.color;
-        settings[i].color = l.color;
 
         colorPicker.addEventListener("input", () => {
+            actualColor.style.backgroundColor = colorPicker.value;
             l.color = colorPicker.value;
             settings[i].color = l.color;
             l.leafletLayer.setStyle({ color: l.color });
             localStorage.setItem("settings", JSON.stringify(settings));
         });
 
-        box.appendChild(colorPicker);
+        colorWrapper.appendChild(actualColor);
+        colorWrapper.appendChild(colorPicker);
+        
+        box.appendChild(colorWrapper);
         
         // ---- On/Off button ----
+        const layerContainerBase = "rgba(255, 255, 255, 0.35)";
+        const layerContainerDark = "rgba(211, 210, 210, 0.35)";
         const activateBtn = document.createElement("button");
         if (l.active != null && l.active === false) {
             activateBtn.innerText = "Turn Layer On";
             settings[i].active = false;
-            box.style.backgroundColor = "#ededed";
+            box.style.backgroundColor = layerContainerDark;
         } else {
             activateBtn.innerText = "Turn Layer Off";
             settings[i].active = true;
-            box.style.backgroundColor = "#ffffff";
+            box.style.backgroundColor = layerContainerBase;
         }
         activateBtn.classList.add("activateBtn");
 
@@ -126,12 +139,12 @@ async function init() {
                 activateBtn.innerText = "Turn Layer On";
                 settings[i].active = false;
                 map.removeLayer(l.leafletLayer);
-                box.style.backgroundColor = "#edededed";
+                box.style.backgroundColor = layerContainerDark;
             } else{
                 activateBtn.innerText = "Turn Layer Off";
                 settings[i].active = true;
                 map.addLayer(l.leafletLayer);
-                box.style.backgroundColor = "#ffffff";
+                box.style.backgroundColor = layerContainerBase;
             }
             localStorage.setItem("settings", JSON.stringify(settings));
         });
