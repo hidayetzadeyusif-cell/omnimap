@@ -1,0 +1,77 @@
+#allContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 10px;
+}
+
+#topBar {
+    position: relative;
+    top: -8px;
+    right: 7px;
+    width: 99.9vw;
+    height: 60px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    backdrop-filter: blur(14px);
+    background: rgba(0, 200, 120, 0.18);
+    border-bottom: 1px solid rgba(255,255,255,0.25);
+}
+
+#map {
+    width: min(82vh, 82vw);
+    height: min(82vh, 82vw);
+    border: solid black 2px;
+    border-radius: 12px;
+}
+
+#mapContainer{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+}
+
+#layersSection {
+    width: 320px;
+    max-height: 82vh;
+    padding: 12px;
+    background: rgba(240, 244, 250, 0.30);
+    backdrop-filter: blur(14px);
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+    overflow-y: scroll;
+}
+
+.layerContainer {
+    width: 90%;
+    backdrop-filter: blur(4px);
+    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    gap: 8px;
+}
+
+.searchPanel {
+    width: 90%;
+    height: 40px;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1.0rem;
+    background: rgba(255,255,255,0.7);
+}
+
+.searchPanel:focus{ box-shadow: 0 0 0 5px #5F8EC2; }
