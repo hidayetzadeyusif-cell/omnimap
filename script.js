@@ -1,16 +1,92 @@
 // ----------------------------------------------------
 // Load external JSON, then initialize the map + UI
 // ----------------------------------------------------
+
+function toggleTheme() {
+    let currentTheme = localStorage.getItem('theme') || 'light';
+
+    if (currentTheme === 'light') {
+        document.getElementById('globalThemeStylesheet').disabled = true;
+        document.getElementById('layoutThemeStylesheet').disabled = true;
+        document.getElementById('uiThemeStylesheet').disabled = true;
+
+        document.getElementById('globalThemeStylesheetDark').disabled = false;
+        document.getElementById('layoutThemeStylesheetDark').disabled = false;
+        document.getElementById('uiThemeStylesheetDark').disabled = false;
+
+        localStorage.setItem('theme', 'dark');
+    } else {
+        document.getElementById('globalThemeStylesheet').disabled = false;
+        document.getElementById('layoutThemeStylesheet').disabled = false;
+        document.getElementById('uiThemeStylesheet').disabled = false;
+
+        document.getElementById('globalThemeStylesheetDark').disabled = true;
+        document.getElementById('layoutThemeStylesheetDark').disabled = true;
+        document.getElementById('uiThemeStylesheetDark').disabled = true;
+
+        localStorage.setItem('theme', 'light');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const savedTheme = localStorage.getItem('theme');
+    const userPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    if (!savedTheme) localStorage.setItem('theme', userPrefersDark ? 'dark' : 'light');
+
+    const themeToApply = savedTheme || (userPrefersDark ? 'dark' : 'light');
+    if (themeToApply === 'dark') {
+        document.getElementById('globalThemeStylesheet').disabled = true;
+        document.getElementById('layoutThemeStylesheet').disabled = true;
+        document.getElementById('uiThemeStylesheet').disabled = true;
+
+        document.getElementById('globalThemeStylesheetDark').disabled = false;
+        document.getElementById('layoutThemeStylesheetDark').disabled = false;
+        document.getElementById('uiThemeStylesheetDark').disabled = false;
+    }
+});
+
 async function init() {
-    // ---- Load JSON file ----
-    const response = await fetch('./data/layers.json');
-    const layers = await response.json();
+    // ----------------------------------------------------
+    // Load data
+    // ----------------------------------------------------
+    // ---- Load layers ----
+    let layers = [];
+    try {
+        const response = await fetch('./data/layers.json');
+        layers = await response.json();
+    } catch (err){
+        console.error("Failed to load presets:", err);
+    }
 
     // ---- Load search index ----
-    const indexResponse = await fetch('./data/index.json');
-    const searchIndex = await indexResponse.json();
+    let searchIndex = [];
+    try {
+        const response = await fetch('./data/index.json');
+        searchIndex = await response.json();
+    } catch (err){
+        console.error("Failed to load presets:", err);
+    }
 
-    layers.forEach(l => l.leafletLayer = null);
+    // ---- Load presets ----
+    let presets = [];
+    try {
+        const response = await fetch("./data/presets.json");
+        presets = await response.json();
+    } catch (err) {
+        console.error("Failed to load presets:", err);
+    }
+
+    layers.forEach((l, i) => {
+        l.leafletLayer = null;
+        l.domContent = {
+            index: i,
+            box: null,
+            activateBtn: null,
+            actualColor: null,
+            colorPicker: null
+        };
+    });
 
     // ----------------------------------------------------
     // Load saved settings from localStorage (if any)
@@ -54,9 +130,53 @@ async function init() {
     });
 
     // ----------------------------------------------------
+    // Helper functions
+    // ----------------------------------------------------
+    const layerContainerBase = "rgba(255, 255, 255, 0.35)";
+    const layerContainerDark = "rgba(211, 210, 210, 0.35)";
+    function setLayerActive(id, active){
+        let layer;
+        layers.forEach(l => {
+            if (l.id == id) layer = l;
+        });
+        if (active){
+            layer.domContent.activateBtn.innerText = "Turn Layer Off";
+            settings[layer.domContent.index].active = true;
+            layer.domContent.box.style.backgroundColor = layerContainerBase;
+        } else{
+            layer.domContent.activateBtn.innerText = "Turn Layer On";
+            settings[layer.domContent.index].active = false;
+            layer.domContent.box.style.backgroundColor = layerContainerDark;
+        }
+        localStorage.setItem("settings", JSON.stringify(settings));
+    }
+    function setLayerOpacity(id, opacity){
+        let layer;
+        layers.forEach(l => {
+            if (l.id == id) layer = l;
+        });
+        layer.opacity = opacity;
+        settings[layer.domContent.index].opacity = opacity;
+        layer.leafletLayer.setStyle({ fillOpacity: opacity });
+        localStorage.setItem("settings", JSON.stringify(settings));
+    }
+    function setLayerColor(id, color){
+        let layer;
+        layers.forEach(l => {
+            if (l.id == id) layer = l;
+        });
+        layer.domContent.actualColor.style.backgroundColor = color;
+        layer.domContent.colorPicker.value = color;
+        layer.color = color;
+        settings[layer.domContent.index].color = color;
+        layer.leafletLayer.setStyle({ color: color });
+        localStorage.setItem("settings", JSON.stringify(settings));
+    }
+
+    // ----------------------------------------------------
     // Generate UI for each layer
     // ----------------------------------------------------
-    const container = document.getElementById("layersSection");
+    const layersContainer = document.getElementById("layersSection");
     let settings = [];
 
     layers.forEach((l, i) => {
@@ -69,6 +189,7 @@ async function init() {
         const box = document.createElement("div");
         box.classList.add("layerContainer");
         l.domElement = box;
+        l.domContent.box = box;
 
         const title = document.createElement("label");
         title.textContent = l.name;
@@ -84,12 +205,7 @@ async function init() {
         settings[i].opacity = l.opacity;
         slider.classList.add("slider");
 
-        slider.addEventListener("input", () => {
-            l.opacity = parseFloat(slider.value);
-            settings[i].opacity = l.opacity;
-            l.leafletLayer.setStyle({ fillOpacity: l.opacity });
-            localStorage.setItem("settings", JSON.stringify(settings));
-        });
+        slider.addEventListener("input", () => setLayerOpacity(l.id, parseFloat(slider.value)));
 
         box.appendChild(slider);
 
@@ -100,19 +216,14 @@ async function init() {
         const actualColor = document.createElement("div");
         actualColor.className = "colorDisplay";
         actualColor.style.backgroundColor = l.color;
+        l.domContent.actualColor = actualColor;
 
         const colorPicker = document.createElement("input");
         colorPicker.type = "color";
         colorPicker.className = "colorPicker";
         colorPicker.value = l.color;
 
-        colorPicker.addEventListener("input", () => {
-            actualColor.style.backgroundColor = colorPicker.value;
-            l.color = colorPicker.value;
-            settings[i].color = l.color;
-            l.leafletLayer.setStyle({ color: l.color });
-            localStorage.setItem("settings", JSON.stringify(settings));
-        });
+        colorPicker.addEventListener("input", () => setLayerColor(l.id, colorPicker.value));
 
         colorWrapper.appendChild(actualColor);
         colorWrapper.appendChild(colorPicker);
@@ -120,33 +231,15 @@ async function init() {
         box.appendChild(colorWrapper);
         
         // ---- On/Off button ----
-        const layerContainerBase = "rgba(255, 255, 255, 0.35)";
-        const layerContainerDark = "rgba(211, 210, 210, 0.35)";
         const activateBtn = document.createElement("button");
-        if (l.active != null && l.active === false) {
-            activateBtn.innerText = "Turn Layer On";
-            settings[i].active = false;
-            box.style.backgroundColor = layerContainerDark;
-        } else {
-            activateBtn.innerText = "Turn Layer Off";
-            settings[i].active = true;
-            box.style.backgroundColor = layerContainerBase;
-        }
+        l.domContent.activateBtn = activateBtn;
+        if (l.active != null && l.active === false) setLayerActive(l.id, false);
+        else setLayerActive(l.id, true);
         activateBtn.classList.add("activateBtn");
 
         activateBtn.addEventListener("click", () =>{
-            if (map.hasLayer(l.leafletLayer)){
-                activateBtn.innerText = "Turn Layer On";
-                settings[i].active = false;
-                map.removeLayer(l.leafletLayer);
-                box.style.backgroundColor = layerContainerDark;
-            } else{
-                activateBtn.innerText = "Turn Layer Off";
-                settings[i].active = true;
-                map.addLayer(l.leafletLayer);
-                box.style.backgroundColor = layerContainerBase;
-            }
-            localStorage.setItem("settings", JSON.stringify(settings));
+            if (map.hasLayer(l.leafletLayer)) setLayerActive(l.id, false);
+            else setLayerActive(l.id, true);
         });
 
         box.appendChild(activateBtn);
@@ -166,13 +259,19 @@ async function init() {
 
         box.appendChild(mdContainer);
 
-        container.appendChild(box);
+        layersContainer.appendChild(box);
     });
+
+    // ----------------------------------------------------
+    // Generate UI for each preset
+    // ----------------------------------------------------
+    // Please make me
 
     // ----------------------------------------------------
     // Generate external UI
     // ----------------------------------------------------
-    const searchPanel = document.getElementById("searchPanel");
+    // ---- Search Panel ----
+    const searchPanel = document.getElementById("layerSearchPanel");
     searchPanel.addEventListener("input", () => {
         const query = searchPanel.value.trim().toLowerCase();
         const tokens = query.split(/\s+/).filter(Boolean);
@@ -194,6 +293,22 @@ async function init() {
             else l.domElement.style.display = "none";
         });
     });
+
+    // ----------------------------------------------------
+    // Hook Event Listeners
+    // ----------------------------------------------------
+
+    // ---- Settings Popup ----
+    const settingsModal = document.getElementById("settingsModal");
+    const settingsOpenBtn = document.getElementById("openSettings");
+    const settingsCloseBtn = document.getElementById("closeSettings");
+
+    settingsOpenBtn.onclick = () => { settingsModal.style.display = "flex"; };
+    settingsCloseBtn.onclick = () => { settingsModal.style.display = "none"; };
+
+    // ---- Theme Change ----
+    const themeChangeBtn = document.getElementById("themeChangeBtn");
+    themeChangeBtn.onclick = () => { toggleTheme() }
 
     // ---- Save settings ----
     localStorage.setItem("settings", JSON.stringify(settings));
