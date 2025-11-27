@@ -3,21 +3,54 @@
     <head>
         <meta charset="UTF-8">
         <title>OmniMap</title>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-     crossorigin=""/>
-        <link rel="stylesheet" href="style.css">
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+        <link id="globalThemeStylesheet" rel="stylesheet" href="css/light-theme/light-global-style.css">
+        <link id="layoutThemeStylesheet" rel="stylesheet" href="css/light-theme/light-layout-style.css">
+        <link id="uiThemeStylesheet" rel="stylesheet" href="css/light-theme/light-ui-elements-style.css">
+
+        <link id="globalThemeStylesheetDark" rel="stylesheet" href="css/dark-theme/dark-global-style.css" disabled>
+        <link id="layoutThemeStylesheetDark" rel="stylesheet" href="css/dark-theme/dark-layout-style.css" disabled>
+        <link id="uiThemeStylesheetDark" rel="stylesheet" href="css/dark-theme/dark-ui-elements-style.css" disabled>
     </head>
     <body>
-        <main id="mapContainer">
-            <section id="layersSection">
-                <input placeholder="Search Layers..." id="searchPanel">
-                <h2>Layers</h2>
+        <div id="allContainer">
+            <nav id="topBar">
+                <button id="openSettings" class="topBarElement topBarButton">
+                    <span class="material-icons">settings</span>
+                </button>
+                <a href="http://127.0.0.1:5500/index.html?test=1" class="topBarElement topBarLink">Self</a>
+                <img src="assets/logoV1.png" style="height: 50px" class="topBarElement">
+            </nav>
+            <div id="settingsModal" class="modal">
+                <div class="modalContent">
+                    <span id="closeSettings" class="closeModal">&times;</span>
+                    <h2>Settings</h2><br>
+                    <p>Light/Dark Theme:</p><button id="themeChangeBtn" class="inSettingsBtn"><span class="material-icons">contrast</span></button>
+                </div>
+            </div>
+            <main id="mapContainer">
+                <section id="layersSection">      
+                    <input placeholder="Search layers and presets..." id="layerSearchPanel" class="searchPanel">
+
+                    <details id="presetsSection" open>
+                        <summary>Smart Presets</summary>
+                        <div class="presetList" id="presetList"></div>
+                    </details>
+                    
+                    <h2 class="layersHeader">Layers</h2>
             </section>
-            
-            <div id="map"></div>
-        </main>
+
+                
+                <div id="map"></div>
+            </main>
+        </div>
 
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
