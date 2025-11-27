@@ -1,0 +1,34 @@
+[
+  {
+    "id": "forest-view-2010",
+    "name": "Forest View 2010",
+    "description": "Collection of different forest maps around 2009-2011.",
+    "metadata": {
+        "category": "Urban",
+        "year": 2010,
+        "author": "CFRY"
+    },
+    "layers": [
+        {
+            "id": "eucalyptus",
+            "color": "#00a72f",
+            "opacity": 0.5
+        },
+        {
+            "id": "olive",
+            "color": "#808000",
+            "opacity": 0.5
+        },
+        {
+            "id": "pine",
+            "color": "#008080",
+            "opacity": 0.5
+        },
+        {
+            "id": "cypress",
+            "color": "#9ACD32",
+            "opacity": 0.5
+        }
+    ]
+  }
+]
